@@ -1,0 +1,1 @@
+# insights_mercado_de_defensivos_agricolas
