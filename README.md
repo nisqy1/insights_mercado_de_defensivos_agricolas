@@ -110,4 +110,3 @@ O projeto demonstra como dados brutos podem ser transformados em informações e
 ## 👩‍💻 Autora
 
 Aneliza Barbero Parussulo  
-Projeto desenvolvido para fins de estudo e como case técnico para vaga de Analista DataOps Jr
