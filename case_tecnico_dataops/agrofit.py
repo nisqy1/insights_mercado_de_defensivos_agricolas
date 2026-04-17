@@ -1,4 +1,3 @@
-
 import pandas as pd
 
 # 1. CARREGAR OS DADOS !!
@@ -18,7 +17,26 @@ def carregar_dados(caminho):
 def tratar_dados(df):
     
     # padronizar nomes das colunas
-    df.columns = df.columns.str.lower().str.strip()
+    df.columns = (
+        df.columns
+        .str.lower()
+        .str.strip()
+        .str.replace(' ', '_')
+    )
+    
+    # garantir colunas essenciais
+    mapeamento = {
+        'titular_de_registro': ['titular_de_registro', 'titular_registro', 'empresa_titular', 'titular'],
+        'cultura': ['cultura', 'culturas', 'descricao_cultura']
+    }
+    
+    for col_padrao, alternativas in mapeamento.items():
+        for alt in alternativas:
+            if alt in df.columns:
+                df[col_padrao] = df[alt]
+                break
+        else:
+            df[col_padrao] = None  # evita quebrar o pipeline
     
     # remover duplicados
     df = df.drop_duplicates()
@@ -27,13 +45,11 @@ def tratar_dados(df):
     colunas_texto = ['titular_de_registro', 'cultura']
     
     for col in colunas_texto:
-        if col in df.columns:
-            df[col] = df[col].astype(str).str.upper().str.strip()
+        df[col] = df[col].astype(str).str.upper().str.strip()
     
-    # tratar nulos (apenas texto)
+    # tratar nulos
     for col in colunas_texto:
-        if col in df.columns:
-            df[col] = df[col].fillna('NAO INFORMADO')
+        df[col] = df[col].fillna('NAO INFORMADO')
     
     return df
 
@@ -107,11 +123,11 @@ def main():
     if df is None:
         return
     
-    # validar antes
-    validar_dados(df)
-    
-    # tratar
+    # tratar (🔥 agora antes da validação)
     df = tratar_dados(df)
+    
+    # validar depois de corrigir colunas
+    validar_dados(df)
     
     # análise
     analisar_dados(df)
@@ -131,4 +147,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
